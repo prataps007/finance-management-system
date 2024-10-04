@@ -1,0 +1,45 @@
+server:
+  port: 8083  # API Gateway port
+
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+#      discovery:
+#        locator:
+#          enabled: true  # Enable service discovery via Eureka
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USERSERVICE
+          predicates:
+            - Path=/users/**  # Route to the User Service
+
+        - id: FINANCE-SERIVCE
+          uri: lb://FINANCESERVICE
+          predicates:
+            - Path=/expenses/**, /incomes/**, /notifications/**  # Route to the Expense Service
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+
+#logging:
+#  level:
+#    org.springframework.cloud.gateway: DEBUG
+
